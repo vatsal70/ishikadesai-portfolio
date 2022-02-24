@@ -1,0 +1,174 @@
+<!-- Extends the basic template-->
+{% extends 'frontend/admin.html' %}
+{% load static %}
+<!-- Here goes the title of the page-->
+{% block title %} Contacts{% endblock %}
+{% block link %}
+<!-- Plugin css for this page -->
+<link rel="stylesheet" href="{% static 'admin/vendors/select2/select2.min.css' %}">
+<link rel="stylesheet" href="{% static 'admin/vendors/select2-bootstrap-theme/select2-bootstrap.min.css' %}">
+<!-- End plugin css for this page -->
+
+{% endblock link %}
+{% block css %}
+
+    .long{
+        word-break: break-word;
+        text-align: left;
+      }
+    .normal{
+        {% comment %} vertical-align: middle; {% endcomment %}
+        line-height: 1;
+        white-space: nowrap;
+    }
+    th, td{
+        text-align:center;
+    }
+
+    td{
+        align-items:center;
+        justify-content:center;
+    }
+    a{
+        margin-left: 15px;
+    }
+{% endblock css %}
+{% block body %}
+
+{% if contact_page %}
+<!--Displaying the contact model's data in the table -->
+<div class="col-lg-12 grid-margin stretch-card">
+    <div class="card">
+        <div class="card-body">
+            <h4 class="card-title">Every Contacts </h4>
+            <p class="card-description">
+            </p>
+            <div class="table-responsive">
+                <table class="table table-striped">
+                    <thead>
+                    <tr>
+                        <th>
+                        Sr.
+                        </th>
+                        <th>
+                        Name
+                        </th>
+                        <th>
+                        Email
+                        </th>
+                        <th>
+                        Description
+                        </th>
+                        <th>
+                        Reply
+                        </th>
+                        <th>
+                        Delete
+                        </th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for contact_items in contact_model %}
+                    <tr>
+                        <td>
+                        {{forloop.counter}}
+                        </td>
+                        <td>
+                            <p>
+                            {{contact_items.contact_name}}
+                            </p>
+                        </td>
+                        <td>
+                            <p>
+                            {{contact_items.contact_email}}
+                            </p>
+                        </td>
+                        <td class = 'long'>
+                            <p>
+                            {{contact_items.contact_description|slice:150}}
+                            </p>
+                        </td>
+                        <td class = "normal">
+                        {% if contact_items.contact_replied == True %}
+                        <a type="button"  class="btn btn-success btn-md">Replied</a>
+                        {% else %}
+                        <a type="button" class="btn btn-outline-primary btn-fw" href="{% url 'admin_contact_reply' contact_items.id %}" >Reply</a>
+                        {% endif %}
+                        </td>
+                        <td class = "normal">
+                        <a type="button" class="btn btn-outline-danger btn-fw btn-md"  href="{% url 'admin_contact_delete' contact_items.id %}"onclick="return confirm('Are you sure you want to delete this item?');">Delete</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% else %}
+
+<!--Form for uploading data in contact section -->
+<div class="col-12 grid-margin stretch-card">
+    <div class="card">
+        <div class="card-body">
+            <h4 class="card-title">Contacts</h4>
+            <p class="card-description">
+            Contact Section
+            </p>
+            <form class="forms-sample" method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label for="contact_name">Name</label>
+                    <input type="text" value = "{{contact_name}}" class="form-control" id="contact_name_get" name='contact_name_get' placeholder="Enter the name of your project.">
+                </div>
+                <div class="form-group">
+                    <label for="contact_name">Email</label>
+                    <input type="text" value = "{{contact_email}}" class="form-control" id="contact_email_get" name='contact_email_get' placeholder="Enter the name of your project.">
+                </div>
+                <div class="form-group">
+                    <label for="contact_name">Subject</label>
+                    <input type="text" value = "{{contact_subject}}" class="form-control" id="contact_subject_get" name='contact_subject_get' placeholder="Enter the name of your project.">
+                </div>
+                <div class="form-group">
+                    <label for="contact_description">Message</label>
+                    <textarea  cols="0" rows="10" class="form-control" id="contact_description_get" name='contact_description_get'>{{contact_description}}</textarea>
+                </div>
+                <div class="form-group">
+                    <label for="contact_reply">Reply</label>
+                    <textarea  cols="0" rows="10" class="form-control" id="contact_reply_get" name='contact_reply_get'></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary mr-2">Submit</button>
+                <a type='button' class="btn btn-light a-btn" href = "{% url 'admin_about' %}">Cancel</a>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+{% endif %}
+
+
+{% block js %}
+<!-- plugins:js -->
+<script src="{% static 'admin/vendors/js/vendor.bundle.base.js' %}"></script>
+<!-- endinject -->
+<!-- Plugin js for this page -->
+<script src="{% static 'admin/vendors/typeahead.js/typeahead.bundle.min.js' %}"></script>
+<script src="{% static 'admin/vendors/select2/select2.min.js' %}"></script>
+<!-- End plugin js for this page -->
+<!-- inject:js -->
+<script src="{% static 'admin/js/off-canvas.js' %}"></script>
+<script src="{% static 'admin/js/hoverable-collapse.js' %}"></script>
+<script src="{% static 'admin/js/template.js' %}"></script>
+<script src="{% static 'admin/js/settings.js' %}"></script>
+<script src="{% static 'admin/js/todolist.js' %}"></script>
+<!-- endinject -->
+<!-- Custom js for this page-->
+<script src="{% static 'admin/js/file-upload.js' %}"></script>
+<script src="{% static 'admin/js/typeahead.js' %}"></script>
+<script src="{% static 'admin/js/select2.js' %}"></script>
+<!-- End custom js for this page-->
+{% endblock js %}
+{% endblock body %}

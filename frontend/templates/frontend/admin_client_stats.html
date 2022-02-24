@@ -1,0 +1,201 @@
+<!-- Extends the basic template-->
+{% extends 'frontend/admin.html' %}
+{% load static %}
+<!-- Here goes the title of the page-->
+{% block title %} Client Stats{% endblock %}
+{% block link %}
+<!-- Plugin css for this page -->
+<link rel="stylesheet" href="{% static 'admin/vendors/select2/select2.min.css' %}">
+<link rel="stylesheet" href="{% static 'admin/vendors/select2-bootstrap-theme/select2-bootstrap.min.css' %}">
+<!-- End plugin css for this page -->
+
+{% endblock link %}
+{% block css %}
+
+    .long{
+        word-break: break-word;
+      }
+    .normal{
+        {% comment %} vertical-align: middle; {% endcomment %}
+        line-height: 1;
+        white-space: nowrap;
+    }
+    th, td{
+        text-align:center;
+    }
+
+    td{
+        align-items:center;
+        justify-content:center;
+    }
+    a{
+        margin-left: 15px;
+    }
+{% endblock css %}
+{% block body %}
+
+{% if client_stats_page %}
+
+<!--Form for uploading data in skill section -->
+<div class="col-12 grid-margin stretch-card">
+    <div class="card">
+        <div class="card-body">
+            <h4 class="card-title">Client Stats</h4>
+            <p class="card-description">
+            Stats Section
+            </p>
+            <form class="forms-sample" method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label for="skill_name">Total Clients</label>
+                    <input type="text" class="form-control" id="clients_total" name='clients_total' placeholder="Enter your total numberof clients.">
+                </div>
+                <div class="form-group">
+                    <label for="skill_percentage">Total Projects Completed</label>
+                    <input type="text" class="form-control" id="clients_project_complete" name='clients_project_complete' placeholder="Enter your total number of completed projects">
+                </div>
+                <div class="form-group">
+                    <label for="skill_percentage">Total Projects Ongoing</label>
+                    <input type="text" class="form-control" id="clients_project_ongoing" name='clients_project_ongoing' placeholder="Enter your total number of ongoing projects">
+                </div>
+                <div class="form-group">
+                    <label for="skill_percentage">Total Client Satisfaction</label>
+                    <input type="text" class="form-control" id="clients_satisfaction" name='clients_satisfaction' placeholder="Enter your total number of satisfied clients.">
+                </div>
+                <button type="submit" class="btn btn-primary mr-2">Submit</button>
+                <a type='button' class="btn btn-light" href = "{% url 'admin_client_stats' %}">Cancel</a>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+<!--Displaying the skill model's data in the table -->
+<div class="col-lg-12 grid-margin stretch-card">
+    <div class="card">
+        <div class="card-body">
+            <h4 class="card-title">Every Client Stats </h4>
+            <p class="card-description">
+            </p>
+            <div class="table-responsive">
+                <table class="table table-striped">
+                    <thead>
+                    <tr>
+                        <th>
+                        Sr.
+                        </th>
+                        <th>
+                        Total Clients
+                        </th>
+                        <th>
+                        Completed
+                        </th>
+                        <th>
+                        Ongoing
+                        </th>
+                        <th>
+                        Total Satisfied
+                        </th>
+                        <th>Status</th>
+                        <th>
+                        Edit
+                        </th>
+                        <th>
+                        Delete
+                        </th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for client_stats_items in client_stats_model %}
+                    <tr>
+                        <td>
+                        {{forloop.counter}}
+                        </td>
+                        <td>
+                            <p>
+                            {{client_stats_items.clients_total}}
+                        </td>
+                        <td class = 'long'>
+                            <p>
+                            {{client_stats_items.clients_project_complete}}
+                            </p>
+                        </td>
+                        <td class = 'long'>
+                            <p>
+                            {{client_stats_items.clients_project_ongoing}}
+                            </p>
+                        </td>
+                        <td class = 'long'>
+                            <p>
+                            {{client_stats_items.clients_satisfaction}}
+                            </p>
+                        </td>
+                        <td class = "normal">
+                        {% if client_stats_items.clients_current == True %}
+                            <a type="button"  class="btn btn-success btn-md">Selected</a>
+                        {% else %}
+                            <a type="button"  class="btn btn-outline-primary btn-fw" href="{% url 'admin_change_current_client_stats' client_stats_items.id %}">Select</a>
+                        {% endif %}
+                        </td>
+                        <td class = "normal">
+                        <a type="button"  class="btn btn-outline-primary btn-fw" href="{% url 'admin_client_stats_edit' client_stats_items.id %}">Edit</a>
+                        </td>
+                        <td class = "normal">
+                        <a type="button" class="btn btn-outline-danger btn-fw btn-md" href="{% url 'admin_client_stats_delete' client_stats_items.id %}" onclick="return confirm('Are you sure you want to delete this item?');">Delete</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% else %}
+
+
+<!--Edit form for the client_stats model's data-->
+<div class="col-12 grid-margin stretch-card">
+    <div class="card">
+        <div class="card-body">
+            <h4 class="card-title">Edit your Client Stats</h4>
+            <p class="card-description">
+            Stats Section
+            </p>
+            <form class="forms-sample" method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+                {{ form.as_p }}
+                {{ form.media}}
+                <br>
+            <button type="submit" class="btn btn-primary mr-2">Submit</button>
+            <a type='button' class="btn btn-light" href = "{% url 'admin_client_stats' %}">Cancel</a>
+            </form>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+{% block js %}
+<!-- plugins:js -->
+<script src="{% static 'admin/vendors/js/vendor.bundle.base.js' %}"></script>
+<!-- endinject -->
+<!-- Plugin js for this page -->
+<script src="{% static 'admin/vendors/typeahead.js/typeahead.bundle.min.js' %}"></script>
+<script src="{% static 'admin/vendors/select2/select2.min.js' %}"></script>
+<!-- End plugin js for this page -->
+<!-- inject:js -->
+<script src="{% static 'admin/js/off-canvas.js' %}"></script>
+<script src="{% static 'admin/js/hoverable-collapse.js' %}"></script>
+<script src="{% static 'admin/js/template.js' %}"></script>
+<script src="{% static 'admin/js/settings.js' %}"></script>
+<script src="{% static 'admin/js/todolist.js' %}"></script>
+<!-- endinject -->
+<!-- Custom js for this page-->
+<script src="{% static 'admin/js/file-upload.js' %}"></script>
+<script src="{% static 'admin/js/typeahead.js' %}"></script>
+<script src="{% static 'admin/js/select2.js' %}"></script>
+<!-- End custom js for this page-->
+{% endblock js %}
+{% endblock body %}
+

@@ -1,0 +1,14 @@
+{% autoescape off %}
+
+Hi {{contact_name_get}},
+
+Following up on your previous email on my website.
+
+{{contact_reply_get}}
+
+
+
+Best Regards,
+Ishika Desai
+
+{% endautoescape %}
