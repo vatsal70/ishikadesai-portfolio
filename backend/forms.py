@@ -92,7 +92,7 @@ class EditBGImageProfile(forms.ModelForm):
         
 
 class EditSkillProfile(forms.ModelForm):
-    skill_name = forms.CharField(max_length = 20, 
+    skill_name = forms.CharField(max_length = 2000, 
                                  widget = forms.TextInput(
                                      attrs={
                                          'class': 'form-control'
