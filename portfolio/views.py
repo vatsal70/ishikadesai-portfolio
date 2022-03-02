@@ -349,7 +349,7 @@ def admin_cvresume_delete(request, cvresume_id):
     instance = get_object_or_404(CVResume, id = cvresume_id)
     old_file = str(instance.cvresume_file.url)
     print("old file", old_file)
-    # instance.delete()
+    instance.delete()
     try:
         latest_cvresume = CVResume.objects.latest('id')
         latest_id = latest_cvresume.id
